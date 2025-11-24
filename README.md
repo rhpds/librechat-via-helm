@@ -5,7 +5,8 @@ This directory contains the configuration files for deploying LibreChat on OpenS
 ## Files
 
 - `librechat-values.yaml` - Helm values file with OpenShift-specific configurations
-- `secrets-librechat.yaml` - Kubernetes Secret containing credentials and API keys
+- `secrets-librechat.yaml.example` - Sample secrets file template (copy and customize)
+- `secrets-librechat.yaml` - Your actual secrets file (git ignored, not in repo)
 - `user-init-job.yaml` - Kubernetes Job for automatic user creation
 - `install.sh` - Automated deployment script
 - `README.md` - This file
@@ -27,6 +28,21 @@ The `librechat-values.yaml` includes:
 - **Ingress/Route**: Configured for OpenShift route with correct hostname
 
 ## Quick Start (Automated)
+
+### 1. Create your secrets file
+
+Copy the sample secrets file and customize it:
+
+```bash
+cp secrets-librechat.yaml.example secrets-librechat.yaml
+```
+
+Edit `secrets-librechat.yaml` and replace all placeholder values:
+- Generate random secrets: `openssl rand -hex 32`
+- Add your OpenAI API key (or other AI provider keys)
+- Set default user credentials
+
+### 2. Deploy LibreChat
 
 For a fully automated deployment with user creation:
 
@@ -51,13 +67,33 @@ oc create namespace librechat
 
 ### 2. Configure Secrets
 
-Edit `secrets-librechat.yaml` and update:
-- `namespace`: Set to your actual namespace (e.g., `librechat`)
-- `OPENAI_API_KEY`: Add your OpenAI API key (if needed)
-- Other API keys as needed (ANTHROPIC_API_KEY, GOOGLE_API_KEY, etc.)
-- `DEFAULT_USER_EMAIL`: Email for auto-created admin user (default: admin@example.com)
-- `DEFAULT_USER_PASSWORD`: Password for admin user (default: ChangeMe123!)
-- `DEFAULT_USER_NAME`: Display name for admin user (default: Admin User)
+Create your secrets file from the template:
+
+```bash
+cp secrets-librechat.yaml.example secrets-librechat.yaml
+```
+
+Edit `secrets-librechat.yaml` and update all values:
+
+**Required secrets** (generate with `openssl rand -hex 32`):
+- `CREDS_KEY`: Random 32-byte hex string for credential encryption
+- `JWT_SECRET`: Random 32-byte hex string for JWT signing
+- `JWT_REFRESH_SECRET`: Random 32-byte hex string for refresh tokens
+- `MEILI_MASTER_KEY`: Random 16-byte hex string (use `openssl rand -hex 16`)
+
+**Optional API keys** (add as needed):
+- `OPENAI_API_KEY`: Your OpenAI API key from https://platform.openai.com/api-keys
+- `ANTHROPIC_API_KEY`: Claude API key (if using Anthropic models)
+- `GOOGLE_API_KEY`: Google AI API key (if using Google models)
+- `AZURE_OPENAI_API_KEY`: Azure OpenAI key (if using Azure)
+
+**Default user credentials** (for automatic user creation):
+- `DEFAULT_USER_EMAIL`: Email for auto-created admin user
+- `DEFAULT_USER_PASSWORD`: Password for admin user (use a strong password)
+- `DEFAULT_USER_NAME`: Display name for admin user
+
+**Namespace**:
+- Update `metadata.namespace` to match your OpenShift namespace (default: `librechat`)
 
 ### 3. Apply the Secret
 

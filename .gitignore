@@ -1,5 +1,6 @@
 # Kubernetes Secrets - NEVER commit these files
 secrets-*.yaml
+!secrets-*.yaml.example
 *-secret.yaml
 *-secrets.yaml
 

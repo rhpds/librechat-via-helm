@@ -38,6 +38,9 @@ Edit `secrets-librechat.yaml` and update:
 - `namespace`: Set to your actual namespace (e.g., `librechat`)
 - `OPENAI_API_KEY`: Add your OpenAI API key (if needed)
 - Other API keys as needed (ANTHROPIC_API_KEY, GOOGLE_API_KEY, etc.)
+- `DEFAULT_USER_EMAIL`: Email for auto-created admin user (default: admin@example.com)
+- `DEFAULT_USER_PASSWORD`: Password for admin user (default: ChangeMe123!)
+- `DEFAULT_USER_NAME`: Display name for admin user (default: Admin User)
 
 ### 3. Apply the Secret
 
@@ -87,6 +90,20 @@ oc get route -n librechat
 ```
 
 Access LibreChat at the displayed hostname.
+
+### 8. (Optional) Create Default User Automatically
+
+To create a default admin user automatically on deployment:
+
+```bash
+oc apply -f user-init-job.yaml
+```
+
+This will create a user with credentials from your secrets file:
+- Email: `DEFAULT_USER_EMAIL` (default: admin@example.com)
+- Password: `DEFAULT_USER_PASSWORD` (default: ChangeMe123!)
+
+The job will skip creation if the user already exists.
 
 ## Updating the Deployment
 

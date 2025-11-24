@@ -38,7 +38,7 @@ cp secrets-librechat.yaml.example secrets-librechat.yaml
 ```
 
 Edit `secrets-librechat.yaml` and replace all placeholder values:
-- Generate random secrets: `openssl rand -hex 32`
+- Generate random secrets: `openssl rand -hex 32` or use the [LibreChat Credentials Generator](https://www.librechat.ai/toolkit/creds_generator)
 - Add your OpenAI API key (or other AI provider keys)
 - Set default user credentials
 
@@ -75,11 +75,13 @@ cp secrets-librechat.yaml.example secrets-librechat.yaml
 
 Edit `secrets-librechat.yaml` and update all values:
 
-**Required secrets** (generate with `openssl rand -hex 32`):
+**Required secrets**:
 - `CREDS_KEY`: Random 32-byte hex string for credential encryption
 - `JWT_SECRET`: Random 32-byte hex string for JWT signing
 - `JWT_REFRESH_SECRET`: Random 32-byte hex string for refresh tokens
-- `MEILI_MASTER_KEY`: Random 16-byte hex string (use `openssl rand -hex 16`)
+- `MEILI_MASTER_KEY`: Random 16-byte hex string
+
+Generate these with `openssl rand -hex 32` (or `openssl rand -hex 16` for MEILI_MASTER_KEY), or use the [LibreChat Credentials Generator](https://www.librechat.ai/toolkit/creds_generator)
 
 **Optional API keys** (add as needed):
 - `OPENAI_API_KEY`: Your OpenAI API key from https://platform.openai.com/api-keys

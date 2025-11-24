@@ -219,6 +219,8 @@ oc delete secret librechat-credentials-env -n librechat
 
 ## Reference
 
+- [LibreChat Documentation](https://www.librechat.ai/docs/local/helm_chart) - Official Helm chart documentation
 - [LibreChat GitHub](https://github.com/danny-avila/LibreChat)
 - [LibreChat Helm Chart](https://github.com/danny-avila/LibreChat/tree/main/charts)
+- [LibreChat Credentials Generator](https://www.librechat.ai/toolkit/creds_generator) - Web-based tool for generating secrets
 - [Bitnami MongoDB on OpenShift](https://github.com/bitnami/containers/blob/main/bitnami/mongodb/README.md)

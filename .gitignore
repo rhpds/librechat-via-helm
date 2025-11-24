@@ -1,0 +1,29 @@
+# Kubernetes Secrets - NEVER commit these files
+secrets-*.yaml
+*-secret.yaml
+*-secrets.yaml
+
+# Environment files with sensitive data
+.env
+.env.*
+*.env
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# IDE and editor files
+.vscode/
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Helm temporary files
+*.tgz
+charts/
+Chart.lock

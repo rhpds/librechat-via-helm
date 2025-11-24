@@ -1,0 +1,64 @@
+# OpenShift compatibility - OpenShift assigns UIDs automatically
+# Main LibreChat app - must explicitly set these to empty/false
+podSecurityContext:
+  fsGroup: null
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  runAsNonRoot: false
+  runAsUser: null
+
+# Environment variables for LibreChat
+librechat:
+  configEnv:
+    ALLOW_REGISTRATION: "true"
+    ALLOW_EMAIL_LOGIN: "true"
+
+# Configure ingress for OpenShift route
+ingress:
+  enabled: true
+  hosts:
+    - host: librechat-librechat-66mk.apps.ocp.47wp5.sandbox29.opentlc.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+
+# Add writable volumes for logs (multiple locations)
+volumes:
+  - name: logs
+    emptyDir: {}
+  - name: logs-root
+    emptyDir: {}
+
+volumeMounts:
+  - name: logs
+    mountPath: /app/api/logs
+  - name: logs-root
+    mountPath: /app/logs
+
+# Global OpenShift compatibility for MongoDB
+global:
+  compatibility:
+    openshift:
+      adaptSecurityContext: force
+
+# MongoDB configuration
+mongodb:
+  image:
+    tag: "latest"
+  global:
+    compatibility:
+      openshift:
+        adaptSecurityContext: force
+
+# Meilisearch configuration - override all security contexts
+meilisearch:
+  podSecurityContext:
+    runAsNonRoot: false
+    runAsUser: null
+    runAsGroup: null
+    fsGroup: null
+    fsGroupChangePolicy: null
+  securityContext: {}

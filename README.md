@@ -1,0 +1,152 @@
+# LibreChat Helm Deployment for OpenShift
+
+This directory contains the configuration files for deploying LibreChat on OpenShift using the official Helm chart.
+
+## Files
+
+- `librechat-values.yaml` - Helm values file with OpenShift-specific configurations
+- `secrets-librechat.yaml` - Kubernetes Secret containing credentials and API keys
+- `README.md` - This file
+
+## Prerequisites
+
+1. OpenShift CLI (`oc`) installed and logged in
+2. Helm 3.x installed
+3. A namespace created (e.g., `librechat`)
+
+## Configuration Overview
+
+The `librechat-values.yaml` includes:
+
+- **OpenShift Security Compatibility**: Removes hardcoded UIDs/GIDs that conflict with OpenShift SCC
+- **MongoDB Configuration**: Uses `latest` tag with forced OpenShift adaptation
+- **Meilisearch Configuration**: Security context overrides for OpenShift
+- **Log Volumes**: EmptyDir volumes mounted at `/app/logs` and `/app/api/logs` for writable log directories
+- **Ingress/Route**: Configured for OpenShift route with correct hostname
+
+## Deployment Steps
+
+### 1. Create the Namespace
+
+```bash
+oc create namespace librechat
+```
+
+### 2. Configure Secrets
+
+Edit `secrets-librechat.yaml` and update:
+- `namespace`: Set to your actual namespace (e.g., `librechat`)
+- `OPENAI_API_KEY`: Add your OpenAI API key (if needed)
+- Other API keys as needed (ANTHROPIC_API_KEY, GOOGLE_API_KEY, etc.)
+
+### 3. Apply the Secret
+
+```bash
+oc apply -f secrets-librechat.yaml
+```
+
+### 4. Update the Ingress Hostname
+
+Edit `librechat-values.yaml` and update the ingress host on line 17:
+
+```yaml
+ingress:
+  enabled: true
+  hosts:
+    - host: your-hostname.apps.your-cluster.com  # Update this
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+```
+
+### 5. Install the Helm Chart
+
+```bash
+helm install librechat oci://ghcr.io/danny-avila/librechat-chart/librechat \
+  -n librechat \
+  -f librechat-values.yaml
+```
+
+### 6. Verify Deployment
+
+Check that all pods are running:
+
+```bash
+oc get pods -n librechat
+```
+
+You should see:
+- `librechat-librechat-*` (1/1 Running)
+- `librechat-mongodb-*` (1/1 Running)
+- `librechat-meilisearch-0` (1/1 Running)
+
+### 7. Get the Route
+
+```bash
+oc get route -n librechat
+```
+
+Access LibreChat at the displayed hostname.
+
+## Updating the Deployment
+
+To update the deployment with new values:
+
+```bash
+helm upgrade librechat oci://ghcr.io/danny-avila/librechat-chart/librechat \
+  -n librechat \
+  -f librechat-values.yaml
+```
+
+## Uninstalling
+
+To remove the deployment:
+
+```bash
+helm uninstall librechat -n librechat
+oc delete secret librechat-credentials-env -n librechat
+```
+
+## Troubleshooting
+
+### Pods in ImagePullBackOff
+
+**Issue**: MongoDB image tag doesn't exist
+**Solution**: Already configured to use `latest` tag due to Bitnami catalog changes in 2025
+
+### Pods in CrashLoopBackOff with "permission denied" errors
+
+**Issue**: OpenShift SCC blocking hardcoded UIDs
+**Solution**: Already configured with `runAsUser: null` and `fsGroup: null`
+
+### Application cannot write logs
+
+**Issue**: No write permissions to log directories
+**Solution**: Already configured with emptyDir volumes at `/app/logs` and `/app/api/logs`
+
+### "Application is not available" in browser
+
+**Possible causes**:
+- Browser cache - try hard refresh (Ctrl+Shift+R)
+- DNS propagation - wait a few minutes
+- Check pods are running: `oc get pods -n librechat`
+- Check route: `oc get route -n librechat`
+
+## Components
+
+- **LibreChat**: Main chat application (v0.8.1-rc1)
+- **MongoDB**: Database (bitnami/mongodb:latest)
+- **Meilisearch**: Search engine (v1.7.3)
+
+## Notes
+
+- This configuration is specifically designed for OpenShift
+- Security contexts are removed to allow OpenShift to assign UIDs dynamically
+- MongoDB uses Bitnami's OpenShift compatibility mode
+- Log directories use ephemeral emptyDir volumes (logs are not persisted across pod restarts)
+
+## Reference
+
+- [LibreChat GitHub](https://github.com/danny-avila/LibreChat)
+- [LibreChat Helm Chart](https://github.com/danny-avila/LibreChat/tree/main/charts)
+- [Bitnami MongoDB on OpenShift](https://github.com/bitnami/containers/blob/main/bitnami/mongodb/README.md)

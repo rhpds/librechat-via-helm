@@ -6,6 +6,8 @@ This directory contains the configuration files for deploying LibreChat on OpenS
 
 - `librechat-values.yaml` - Helm values file with OpenShift-specific configurations
 - `secrets-librechat.yaml` - Kubernetes Secret containing credentials and API keys
+- `user-init-job.yaml` - Kubernetes Job for automatic user creation
+- `install.sh` - Automated deployment script
 - `README.md` - This file
 
 ## Prerequisites
@@ -24,7 +26,22 @@ The `librechat-values.yaml` includes:
 - **Log Volumes**: EmptyDir volumes mounted at `/app/logs` and `/app/api/logs` for writable log directories
 - **Ingress/Route**: Configured for OpenShift route with correct hostname
 
-## Deployment Steps
+## Quick Start (Automated)
+
+For a fully automated deployment with user creation:
+
+```bash
+# Deploy everything including automatic user creation
+CREATE_USER=true ./install.sh
+```
+
+Or without automatic user creation:
+
+```bash
+./install.sh
+```
+
+## Manual Deployment Steps
 
 ### 1. Create the Namespace
 

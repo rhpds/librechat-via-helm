@@ -70,3 +70,12 @@ meilisearch:
     fsGroup: null
     fsGroupChangePolicy: null
   securityContext: {}
+
+# Auto-create default user on deployment
+# Set to true to enable automatic user creation
+createDefaultUser:
+  enabled: false  # Change to true to enable
+  # User credentials are pulled from librechat-credentials-env secret:
+  # - DEFAULT_USER_EMAIL
+  # - DEFAULT_USER_PASSWORD
+  # - DEFAULT_USER_NAME

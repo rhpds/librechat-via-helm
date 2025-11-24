@@ -45,9 +45,17 @@ global:
       adaptSecurityContext: force
 
 # MongoDB configuration
+# IMPORTANT: As of August 2025, Bitnami only provides "latest" tag in free tier
+# Current version running: MongoDB 8.2.2
+# Options for pinning versions:
+#   1. Use image digest (recommended): docker.io/bitnami/mongodb@sha256:xxxxx
+#   2. Use Bitnami Legacy repo: docker.io/bitnamilegacy/mongodb:8.0-debian-12
+#   3. Use official MongoDB image: docker.io/mongo:8.2.2 (requires different config)
 mongodb:
   image:
     tag: "latest"
+    # To pin to current version (MongoDB 8.2.2), uncomment the line below and comment out tag:
+    # digest: "sha256:219bea2e10ac98619a0a2edbce0c5119635ffd2518852cd75c77da234e610327"
   global:
     compatibility:
       openshift:

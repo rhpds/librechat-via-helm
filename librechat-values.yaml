@@ -22,17 +22,17 @@ librechat:
     # https://www.librechat.ai/docs/configuration/librechat_yaml/object_structure/custom_endpoint
     endpoints:
       custom:
-        - name: "Granite"
+        - name: "Qwen"
           apiKey: "${CUSTOM_API_KEY}"
-          baseURL: "https://litellm-prod.apps.maas.redhatworkshops.io"
+          baseURL: "https://litellm-litemaas.apps.prod.rhoai.rh-aiservices-bu.com"
           models:
             default:
-              - "granite-8b-code-instruct-128k"
+              - "Qwen2.5-Coder-7B-FP8-dynamic"
             fetch: true
           titleConvo: false
           summarize: false
           forcePrompt: false
-          modelDisplayLabel: "Granite Code 8B"
+          modelDisplayLabel: "Qwen 2.5 Coder 7B"
           dropParams:
             - "user"
             - "frequency_penalty"

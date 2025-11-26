@@ -160,6 +160,58 @@ This will create a user with credentials from your secrets file:
 
 The job will skip creation if the user already exists.
 
+## Configuring Custom AI Endpoints
+
+LibreChat supports custom OpenAI-compatible endpoints at deployment time. To configure:
+
+### 1. Add API Key to Secrets
+
+Edit `secrets-librechat.yaml` and add your custom API key:
+
+```yaml
+stringData:
+  CUSTOM_API_KEY: "your-api-key-here"
+```
+
+### 2. Configure Endpoint in Values File
+
+Edit the `configYamlContent` section in `librechat-values.yaml`:
+
+```yaml
+librechat:
+  configYamlContent: |
+    version: 1.0.8
+    cache: true
+
+    endpoints:
+      custom:
+        - name: "MyCustomLLM"
+          apiKey: "${CUSTOM_API_KEY}"
+          baseURL: "https://api.example.com/v1"
+          models:
+            default:
+              - "gpt-4"
+              - "custom-model-name"
+            fetch: false
+          modelDisplayLabel: "Custom LLM"
+```
+
+### 3. Deploy or Update
+
+```bash
+# Update secrets
+oc apply -f secrets-librechat.yaml
+
+# Update deployment
+helm upgrade librechat oci://ghcr.io/danny-avila/librechat-chart/librechat \
+  -n librechat \
+  -f librechat-values.yaml
+```
+
+The custom endpoint will be available immediately in the LibreChat UI.
+
+For more endpoint configuration options, see the [LibreChat Custom Endpoints Documentation](https://www.librechat.ai/docs/configuration/librechat_yaml/object_structure/custom_endpoint).
+
 ## Updating the Deployment
 
 To update the deployment with new values:

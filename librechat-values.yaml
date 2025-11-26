@@ -12,6 +12,35 @@ securityContext:
 
 # Environment variables for LibreChat
 librechat:
+  # Custom librechat.yaml configuration
+  # https://www.librechat.ai/docs/configuration/librechat_yaml
+  configYamlContent: |-
+    version: 1.0.8
+    cache: true
+
+    # Custom OpenAI-compatible endpoints
+    # https://www.librechat.ai/docs/configuration/librechat_yaml/object_structure/custom_endpoint
+    endpoints:
+      custom:
+        - name: "Granite"
+          apiKey: "${CUSTOM_API_KEY}"
+          baseURL: "https://granite-8b-code-instruct-128k-maas-apicast-production.apps.maas.redhatworkshops.io/v1"
+          models:
+            default:
+              - "granite-8b-code-instruct-128k"
+            fetch: false
+          titleConvo: false
+          summarize: false
+          forcePrompt: true
+          modelDisplayLabel: "Granite Code 8B"
+          dropParams:
+            - "user"
+            - "frequency_penalty"
+            - "presence_penalty"
+          addParams:
+            max_tokens: 2048
+            temperature: 0.7
+
   configEnv:
     ALLOW_REGISTRATION: "true"
     ALLOW_EMAIL_LOGIN: "true"
@@ -20,7 +49,7 @@ librechat:
 ingress:
   enabled: true
   hosts:
-    - host: librechat-librechat-66mk.apps.ocp.47wp5.sandbox29.opentlc.com
+    - host: librechat-librechat.apps.cluster-rmvld.dynamic.redhatworkshops.io
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -74,7 +103,7 @@ meilisearch:
 # Auto-create default user on deployment
 # Set to true to enable automatic user creation
 createDefaultUser:
-  enabled: false  # Change to true to enable
+  enabled: true  # Change to true to enable
   # User credentials are pulled from librechat-credentials-env secret:
   # - DEFAULT_USER_EMAIL
   # - DEFAULT_USER_PASSWORD

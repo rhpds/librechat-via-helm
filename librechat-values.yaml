@@ -24,22 +24,19 @@ librechat:
       custom:
         - name: "Granite"
           apiKey: "${CUSTOM_API_KEY}"
-          baseURL: "https://granite-8b-code-instruct-128k-maas-apicast-production.apps.maas.redhatworkshops.io/v1"
+          baseURL: "https://litellm-prod.apps.maas.redhatworkshops.io"
           models:
             default:
               - "granite-8b-code-instruct-128k"
-            fetch: false
+            fetch: true
           titleConvo: false
           summarize: false
-          forcePrompt: true
+          forcePrompt: false
           modelDisplayLabel: "Granite Code 8B"
           dropParams:
             - "user"
             - "frequency_penalty"
             - "presence_penalty"
-          addParams:
-            max_tokens: 2048
-            temperature: 0.7
 
   configEnv:
     ALLOW_REGISTRATION: "true"
